@@ -5,6 +5,8 @@ import { YoutubeRequest } from "./youtube/request";
 interface PlaylistsState {
   items: Array<YoutubePlaylist>;
   loadingState: { all: number; now: number };
+  userSelectList: Array<Array<boolean>>;
+  isExpands: Array<boolean>;
 }
 
 export default class Playlists {
@@ -13,7 +15,9 @@ export default class Playlists {
     loadingState: {
       all: 0,
       now: 0
-    }
+    },
+    userSelectList: [],
+    isExpands: []
   };
 
   request: YoutubeRequest = new YoutubeRequest();
@@ -26,16 +30,42 @@ export default class Playlists {
     return this.state.loadingState;
   }
 
-  // mutation
-  commitItems(items: Array<YoutubePlaylist>) {
+  get userSelectList(): Array<Array<boolean>> {
+    return this.state.userSelectList;
+  }
+
+  get isExpands(): Array<boolean> {
+    return this.state.isExpands;
+  }
+
+  // mutation(initialize)
+  setItems(items: Array<YoutubePlaylist>) {
     this.state.items = items;
   }
 
+  setUserSelectItems(items: Array<YoutubePlaylist>) {
+    let len = items.length;
+    let a = new Array(len);
+    for (let i = 0; i < len; i++) {
+      a[i] = new Array(items[i].items.length).fill(false);
+    }
+    this.state.userSelectList = a;
+  }
+
+  setIsExpand(items: Array<YoutubePlaylist>) {
+    let len = items.length;
+    this.state.isExpands = new Array(len).fill(false);
+  }
+
+  // mutation(initialize)
   initializeState() {
     this.state.items = [];
+    this.state.userSelectList = [];
     this.state.loadingState.all = 0;
     this.state.loadingState.now = 0;
   }
+
+  // mutation
 
   // async action
   async fetchByUsername(username: string) {
@@ -45,7 +75,9 @@ export default class Playlists {
       this.state.loadingState
     );
     //console.log(playlists);
-    this.commitItems(playlists);
+    this.setItems(playlists);
+    this.setUserSelectItems(playlists);
+    this.setIsExpand(playlists);
   }
 
   // async action
@@ -55,6 +87,8 @@ export default class Playlists {
       channelId,
       this.state.loadingState
     );
-    this.commitItems(playlists);
+    this.setItems(playlists);
+    this.setUserSelectItems(playlists);
+    this.setIsExpand(playlists);
   }
 }

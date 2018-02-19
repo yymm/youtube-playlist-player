@@ -7,30 +7,17 @@
       </h1>
       <h2 class="loading">{{ loading }}</h2>
     </div>
-    <div
+    <List
       v-if="playlists.items.length !== 0"
-      v-for="(playlist, i) in playlists.items"
-      :key="i">
-      <h3 class="playlist-title">
-        {{ playlist.title }}
-        <!--v-icon can not attatch event because use span wrapper-->
-        <span class="play" @click="onClickPlaylist(i)">
-          <v-icon name="play-circle"></v-icon>
-        </span>
-      </h3>
-      <div
-        class="video-title"
-        v-for="(video, j) in playlist.items"
-        :key="j">
-        {{ video.title }}
-      </div>
-    </div>
+      :store="store"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Store } from "@/store";
+import List from "@/components/List.vue";
 
 export default Vue.extend({
   name: "playlist",
@@ -40,14 +27,8 @@ export default Vue.extend({
   data() {
     return {
       playlists: this.store.playlists,
-      loadingState: this.store.playlists.loadingState,
+      loadingState: this.store.playlists.loadingState
     };
-  },
-  methods: {
-    onClickPlaylist(i: number) {
-      this.$router.push("player");
-      this.store.nowplaying.setItems(this.playlists.items[i].items);
-    }
   },
   computed: {
     loading_percentage(): string {
@@ -58,37 +39,15 @@ export default Vue.extend({
     loading(): string {
       return `${this.loadingState.now} / ${this.loadingState.all}`;
     }
+  },
+  components: {
+    List
   }
 });
 </script>
 
 <style lang="less" scoped>
 @import "../assets/color.less";
-.playlist-title {
-  width: 100%;
-  color: @white;
-  background: @black;
-  padding: 5px 0;
-  margin: 20px 0 0;
-}
-.video-title {
-  width: 100%;
-  color: @black;
-  border-bottom: @black solid 1px;
-  padding: 3px 0;
-}
-.play {
-  cursor: pointer;
-}
-.icon-play-circle {
-  width: 28px;
-  color: @white;
-  background: @black;
-  vertical-align: bottom;
-}
-.icon-play-circle:hover {
-  color: @red;
-}
 .icon-percent {
   width: 28px;
   background: #fff;
