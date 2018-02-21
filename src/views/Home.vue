@@ -46,6 +46,15 @@ export default Vue.extend({
           alert(e.message);
         });
     }
+  },
+  mounted(){
+    const username = this.$route.query.username;
+    const channelId = this.$route.query.channelId;
+    if (username || channelId) {
+      //Clear both values when params are defined.
+      this.username = username ? username : "";
+      this.channelId = channelId ? channelId : "";
+    }
   }
 });
 </script>
