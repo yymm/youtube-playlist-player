@@ -47,7 +47,7 @@ export default Vue.extend({
         });
     }
   },
-  mounted(){
+  mounted() {
     const username = this.$route.query.username;
     const channelId = this.$route.query.channelId;
     if (username || channelId) {
